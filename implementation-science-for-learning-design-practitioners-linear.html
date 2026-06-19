@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Implementation Science for Learning Design Practitioners — Knowledge Resource</title>
+  <link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f5f6f7;
+      --surface-alt: #eaecee;
+      --ink: #303e44;
+      --ink-mid: #4f6068;
+      --ink-light: #7a9098;
+      --accent: #475f6a;
+      --accent-light: #e4eaed;
+      --accent-mid: #7a9aa8;
+      --border: #d5dde1;
+      --border-strong: #b5c5cc;
+      --font: 'Asap', system-ui, sans-serif;
+      --max: 740px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--ink); font-size: 16px; line-height: 1.7; }
+
+    /* Skip links */
+    .skip-link { position: absolute; top: -100px; left: 1rem; background: var(--accent); color: #fff; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none; font-size: 0.85rem; z-index: 999; }
+    .skip-link:focus { top: 1rem; }
+
+    /* Header */
+    header { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 2rem; }
+    .header-inner { max-width: var(--max); margin: 0 auto; padding: 2.25rem 0 2rem; }
+    .site-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; }
+    header h1 { font-size: 1.9rem; font-weight: 700; line-height: 1.2; color: var(--ink); }
+    .header-sub { font-size: 0.95rem; color: var(--ink-mid); margin-top: 0.6rem; line-height: 1.6; }
+    .version-note { background: var(--accent-light); border-left: 3px solid var(--accent); margin-top: 1.25rem; padding: 0.7rem 1rem; font-size: 0.84rem; color: var(--ink-mid); border-radius: 0 4px 4px 0; line-height: 1.6; }
+    .version-note a { color: var(--accent); }
+
+    /* Main layout */
+    main { max-width: var(--max); margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+
+    /* Table of contents */
+    #toc { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem 1.75rem; margin-bottom: 3rem; }
+    #toc h2 { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 1rem; }
+    #toc ol { padding-left: 1.25rem; }
+    #toc > ol > li { margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 600; color: var(--ink); }
+    #toc > ol > li > a { color: var(--ink); text-decoration: none; }
+    #toc > ol > li > a:hover { text-decoration: underline; color: var(--accent); }
+    #toc ul { padding-left: 1.1rem; margin-top: 0.3rem; list-style: disc; }
+    #toc ul li { margin-bottom: 0.2rem; font-size: 0.85rem; font-weight: 400; }
+    #toc ul li a { color: var(--ink-mid); text-decoration: none; }
+    #toc ul li a:hover { text-decoration: underline; color: var(--accent); }
+
+    /* Section markers */
+    .section-marker { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-light); display: block; margin-bottom: 0.5rem; }
+
+    /* Headings */
+    h2 { font-size: 1.55rem; font-weight: 700; color: var(--ink); margin-bottom: 0.65rem; line-height: 1.25; }
+    h3 { font-size: 1.1rem; font-weight: 600; color: var(--ink); margin: 2rem 0 0.5rem; }
+    h4 { font-size: 0.95rem; font-weight: 600; color: var(--ink); margin: 1.5rem 0 0.4rem; }
+
+    /* Section block */
+    .section-block { border-top: 2px solid var(--border); padding-top: 2.5rem; margin-top: 3rem; }
+    .section-block:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
+
+    /* Stage header */
+    .stage-header { display: flex; align-items: baseline; gap: 0.75rem; margin: 2rem 0 0.5rem; padding-bottom: 0.65rem; border-bottom: 1px solid var(--border); }
+    .stage-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.2rem 0.6rem; border-radius: 999px; flex-shrink: 0; }
+    .stage-header h3 { margin: 0; font-size: 1rem; }
+    .stage-sub { font-size: 0.82rem; color: var(--ink-light); margin-top: 0.2rem; }
+
+    /* Body text */
+    p { font-size: 0.925rem; color: var(--ink-mid); line-height: 1.75; margin-bottom: 0.85rem; }
+    p strong { color: var(--ink); }
+    p:last-child { margin-bottom: 0; }
+
+    /* Lists */
+    ul, ol { padding-left: 1.3rem; margin: 0.6rem 0 1rem; }
+    li { font-size: 0.925rem; color: var(--ink-mid); line-height: 1.65; margin-bottom: 0.3rem; }
+    li strong { color: var(--ink); }
+
+    /* Produces box */
+    .produces { background: var(--surface); border-radius: 6px; padding: 1rem 1.2rem; margin: 1rem 0; }
+    .produces-label { font-size: 0.67rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-light); display: block; margin-bottom: 0.5rem; }
+    .produces ul { margin: 0; }
+
+    /* Note */
+    .note { font-size: 0.84rem; font-style: italic; color: var(--ink-light); margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+
+    /* Callout */
+    .callout { background: var(--accent-light); border-left: 3px solid var(--accent); padding: 1rem 1.2rem; margin: 1.5rem 0; border-radius: 0 6px 6px 0; }
+    .callout-label { font-size: 0.67rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 0.4rem; }
+    .callout p { font-size: 0.9rem; margin-bottom: 0; }
+
+    /* Domain group (for competencies) */
+    .domain-group { margin: 2rem 0 0; }
+    .domain-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-light); border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; margin-bottom: 1rem; }
+
+    /* Decision subsection */
+    .decision-group { margin: 1.75rem 0; }
+    .decision-group h3 { font-size: 0.9rem; font-weight: 700; color: var(--ink); margin: 0 0 0.5rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+
+    /* Impact table */
+    .impact-table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.875rem; }
+    .impact-table th { text-align: left; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-light); padding: 0.6rem 0.85rem; background: var(--surface); border: 1px solid var(--border); }
+    .impact-table td { padding: 0.85rem; border: 1px solid var(--border); vertical-align: top; color: var(--ink-mid); line-height: 1.6; }
+    .impact-table td strong { color: var(--ink); display: block; margin-bottom: 0.2rem; }
+    .impact-table tr:nth-child(even) td { background: var(--surface); }
+
+    /* Reflection questions */
+    .reflection-group { margin: 1.75rem 0; }
+    .reflection-group h3 { font-size: 0.9rem; font-weight: 700; color: var(--ink); margin: 0 0 0.65rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+    .reflection-group ul { list-style: none; padding: 0; margin: 0; }
+    .reflection-group ul li { font-size: 0.9rem; color: var(--ink-mid); line-height: 1.65; padding: 0.6rem 0; border-bottom: 1px dashed var(--border); display: flex; gap: 0.6rem; align-items: flex-start; }
+    .reflection-group ul li:last-child { border-bottom: none; }
+    .reflection-group ul li .q-icon { flex-shrink: 0; font-size: 1rem; margin-top: 0.05rem; }
+
+    /* Citations */
+    .citation-group { margin-bottom: 1.75rem; }
+    .citation-group-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 0.65rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--border); }
+    .citation-entry { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.8rem 1rem; margin-bottom: 0.45rem; }
+    .citation-entry .cite-label { font-size: 0.67rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.2rem; display: block; }
+    .citation-entry p { font-size: 0.84rem; margin-bottom: 0; }
+    .citation-entry a { color: var(--accent); text-decoration: none; font-size: 0.81rem; display: block; margin-top: 0.25rem; word-break: break-all; }
+    .citation-entry a:hover { text-decoration: underline; }
+
+    /* Back to top */
+    .back-to-top { display: inline-block; margin-top: 2.5rem; font-size: 0.85rem; color: var(--accent); text-decoration: none; }
+    .back-to-top:hover { text-decoration: underline; }
+
+    /* Footer credit */
+    .page-credit { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 0.83rem; color: var(--ink-light); line-height: 1.65; }
+    .page-credit a { color: var(--accent); text-decoration: none; }
+    .page-credit a:hover { text-decoration: underline; }
+
+    footer { border-top: 1px solid var(--border); background: var(--surface); padding: 1.5rem 2rem; text-align: center; font-size: 0.78rem; color: var(--ink-light); }
+
+    @media (max-width: 640px) {
+      main { padding: 1.5rem 1rem 4rem; }
+      header { padding: 0 1rem; }
+      header h1 { font-size: 1.5rem; }
+      .impact-table { font-size: 0.82rem; }
+      .impact-table td, .impact-table th { padding: 0.65rem; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<a href="#toc" class="skip-link" style="left: 12rem;">Skip to table of contents</a>
+
+<header>
+  <div class="header-inner">
+    <div class="site-label">Implementation Science — Knowledge Resource</div>
+    <h1>Implementation Science for Learning Design Practitioners</h1>
+    <p class="header-sub">A structured guide to the knowledge foundations, core frameworks, practical competencies, and professional applications of implementation science — written for learning designers working at the intersection of evidence and organizational practice.</p>
+    <p class="version-note"><strong>Screen reader and keyboard-optimised version.</strong> This is a fully linear, plain-structure version of this resource. All content is presented in reading order with no tabs, accordions, or JavaScript. An <a href="implementation-science-for-learning-design-practitioners.html">interactive version with tabs and expandable sections</a> is also available.</p>
+  </div>
+</header>
+
+<main id="main-content">
+
+  <!-- TABLE OF CONTENTS -->
+  <nav id="toc" aria-label="Table of contents">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#foundations">Ten Knowledge Foundations</a>
+        <ul>
+          <li><a href="#foundations-list">The ten knowledge foundations</a></li>
+          <li><a href="#entry-point">The learning designer's entry point</a></li>
+          <li><a href="#knowledge-gap">Why the knowledge-to-practice gap is the central problem</a></li>
+        </ul>
+      </li>
+      <li><a href="#frameworks">Core Frameworks</a>
+        <ul>
+          <li><a href="#cfir">CFIR: Consolidated Framework for Implementation Research</a></li>
+          <li><a href="#epis">EPIS: Exploration–Preparation–Implementation–Sustainment</a></li>
+          <li><a href="#reaim">RE-AIM: Reach, Effectiveness, Adoption, Implementation, Maintenance</a></li>
+          <li><a href="#additional-frameworks">Additional frameworks: PARIHS, NPT, TDF, and Knowledge to Action</a></li>
+          <li><a href="#framework-distinction">Theory, model, and framework: a necessary distinction</a></li>
+        </ul>
+      </li>
+      <li><a href="#process">How Implementation Unfolds: A Practitioner's Map</a>
+        <ul>
+          <li><a href="#phase-1">Phase 1: Context assessment and readiness</a></li>
+          <li><a href="#phase-2">Phase 2: Stakeholder engagement and co-design</a></li>
+          <li><a href="#phase-3">Phase 3: Fidelity planning and principled adaptation</a></li>
+          <li><a href="#phase-4">Phase 4: Training system design</a></li>
+          <li><a href="#phase-5">Phase 5: Implementation outcome measurement</a></li>
+          <li><a href="#phase-6">Phase 6: Sustainability planning</a></li>
+        </ul>
+      </li>
+      <li><a href="#competencies">Core Competencies</a>
+        <ul>
+          <li><a href="#comp-foundational">Foundational knowledge</a></li>
+          <li><a href="#comp-research">Research and evaluation</a></li>
+          <li><a href="#comp-mobilization">Knowledge mobilization</a></li>
+          <li><a href="#comp-practice">Implementation practice</a></li>
+          <li><a href="#comp-systems">Systems, equity, and leadership</a></li>
+        </ul>
+      </li>
+      <li><a href="#impact">Impact and Areas of Greatest Potential</a>
+        <ul>
+          <li><a href="#priority-domains">Highest-priority domains</a></li>
+          <li><a href="#adjacent-domains">Adjacent high-impact areas</a></li>
+          <li><a href="#org-impact">What rigorous implementation design produces for organizations</a></li>
+        </ul>
+      </li>
+      <li><a href="#reflection">Reflection: Where Are You in This Work?</a></li>
+      <li><a href="#citations">Citations</a></li>
+    </ol>
+  </nav>
+
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 1: FOUNDATIONS
+  ═══════════════════════════════════════════ -->
+  <section class="section-block" id="foundations">
+    <span class="section-marker">Section 1</span>
+    <h2>Ten Knowledge Foundations</h2>
+
+    <p>Implementation science and knowledge mobilization draw from multiple disciplines. Effective practice requires fluency across all ten bodies of knowledge below — though the emphasis shifts depending on whether you are working as a researcher, practitioner, knowledge broker, evaluator, or organizational leader. For learning designers, the entry point is recognizing that the analytical work you already do — diagnosing performance gaps, mapping systems, designing for transfer — is implementation science work, even if it has not been named as such.</p>
+
+    <h3 id="foundations-list">The ten knowledge foundations</h3>
+
+    <h4>1. Behavioural and Social Sciences</h4>
+    <p>Theories of human behaviour, motivation, attitude change, and social influence underpin how individuals and groups adopt new practices. Key frameworks include the Theory of Planned Behavior, Social Cognitive Theory, and Rogers' Diffusion of Innovations — all of which structure the analysis of why evidence-based practices do or do not take hold in real systems.</p>
+
+    <h4>2. Organizational Theory and Change Management</h4>
+    <p>Understanding how organizations function, resist or embrace change, and how leadership, culture, and structure affect the uptake of evidence-based practices. Frameworks such as Kotter's 8-Step model, Lewin's change stages, ADKAR, and the Organization Theory for Implementation Science (OTIS) framework provide the structural language for this work.</p>
+
+    <h4>3. Systems Thinking and Complexity Science</h4>
+    <p>Implementation occurs in dynamic, adaptive systems — not linear pipelines. Tools like causal loop diagrams, Peter Senge's Five Disciplines model, and stock-and-flow analysis help practitioners anticipate unintended consequences, identify leverage points, and design interventions that account for system-level feedback rather than isolated components.</p>
+
+    <h4>4. Research Methodology and Evidence Synthesis</h4>
+    <p>Competency in systematic reviews, meta-analyses, realist synthesis, and mixed-methods research enables practitioners to appraise, synthesize, and translate evidence appropriately. In implementation science, both internal validity (causal rigour) and external validity (generalizability to real-world settings) are essential considerations — and often in tension.</p>
+
+    <h4>5. Implementation Frameworks and Models</h4>
+    <p>Mastery of core frameworks — including the Consolidated Framework for Implementation Research (CFIR), Exploration–Preparation–Implementation–Sustainment (EPIS), and Reach–Effectiveness–Adoption–Implementation–Maintenance (RE-AIM) — structures implementation planning, diagnosis, and evaluation. These frameworks are not interchangeable: each serves a distinct analytical purpose.</p>
+
+    <h4>6. Knowledge Translation and Exchange (KTE)</h4>
+    <p>Knowledge translation encompasses the theories and practices governing how knowledge moves between researchers and practitioners — including co-production, boundary spanning, and knowledge brokering. The Knowledge to Action (K2A) Framework describes a cyclical process of knowledge creation and application that is directly relevant to learning design practice.</p>
+
+    <h4>7. Evaluation and Improvement Science</h4>
+    <p>Methods for measuring fidelity, process, and outcome — combined with quality improvement approaches such as Plan–Do–Study–Act (PDSA) cycles — enable practitioners to refine implementation in real time. Evaluation designed into a program from the outset produces fundamentally different data than evaluation added after launch.</p>
+
+    <h4>8. Communication, Dissemination, and Diffusion</h4>
+    <p>The science of how innovations spread through social systems — including Rogers' Diffusion of Innovations — and the distinction between passive dissemination (publishing guidelines) and active dissemination (technical assistance, decision-support tools, tailored messaging) are foundational to knowledge mobilization practice.</p>
+
+    <h4>9. Health Equity, Ethics, and Context Sensitivity</h4>
+    <p>Understanding how power, privilege, structural racism, and social determinants shape who benefits from implementation — and who is systematically excluded — is not peripheral to the field. Centering equity and cultural safety in design and delivery is an implementation science requirement. Decolonizing data frameworks and Indigenous evaluation principles are increasingly recognized as essential, not optional, dimensions of rigorous evaluation design.</p>
+
+    <h4>10. Leadership, Facilitation, and Capacity Building</h4>
+    <p>Implementation science is ultimately practiced through people. Skills in coaching, technical assistance, team facilitation, and building organizational and individual capacity to sustain evidence-based practices over time are the interpersonal infrastructure that technical expertise alone cannot replace.</p>
+
+    <div class="callout" id="entry-point">
+      <span class="callout-label">The learning designer's entry point</span>
+      <p>The analytical work at the core of learning design — diagnosing performance gaps, mapping the conditions that support or impede transfer, evaluating whether programs produce the outcomes they claim — maps directly onto implementation science practice. Needs analysis is context assessment. Curriculum mapping is fidelity planning. Evaluation frameworks are implementation outcome measurement. The conceptual overlap is not superficial: it is the same intellectual work, applied to the same question of why evidence-informed practice does or does not take hold in real organizational settings.</p>
+    </div>
+
+    <h3 id="knowledge-gap">Why the knowledge-to-practice gap is the central problem</h3>
+
+    <p>The founding insight of implementation science is that <strong>knowledge generation and knowledge use are separate problems requiring separate disciplines</strong>. Across nearly every domain where evidence-based practices exist — health, education, social services, public policy — the binding constraint is rarely the absence of good evidence. It is the failure to reliably get that evidence into practice. Implementation science exists to close that gap systematically rather than by chance.</p>
+
+    <p>For learning designers, this framing reorients the work. A well-designed learning program that transfers evidence into practitioner capability is itself a form of knowledge mobilization. A training system that introduces an evidence-based practice to frontline staff is an implementation vehicle. Whether the learning infrastructure is designed with implementation science in mind — or designed in its absence — determines whether the evidence reaches practice or remains on a shelf.</p>
+
+    <p>These ten bodies of knowledge are interconnected, not sequential. Effective implementation scientists and knowledge mobilization practitioners typically work across all of them, tailoring emphasis to context. Fields like healthcare, education, social services, and public policy each stress different combinations — but the integrative, applied nature of the discipline demands fluency across the full set.</p>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 2: FRAMEWORKS
+  ═══════════════════════════════════════════ -->
+  <section class="section-block" id="frameworks">
+    <span class="section-marker">Section 2</span>
+    <h2>Core Frameworks</h2>
+
+    <p>Implementation frameworks are not interchangeable. Each was designed to answer a different question about the implementation process. Understanding what each framework does — and what it does not do — is the prerequisite for selecting and applying them appropriately. The three frameworks described here are the most widely used in the field; combining them, where justified, yields complementary rather than redundant insight.</p>
+
+    <!-- CFIR -->
+    <div id="cfir">
+      <div class="stage-header">
+        <span class="stage-label">Framework 1</span>
+        <h3>Consolidated Framework for Implementation Research (CFIR)</h3>
+      </div>
+      <p class="stage-sub">Diagnosing why implementation succeeds or fails</p>
+      <p>CFIR synthesizes constructs from multiple implementation science sources into a comprehensive diagnostic framework organized around five major domains: <strong>intervention characteristics</strong> (what is being implemented), <strong>outer setting</strong> (the broader policy, community, and system environment), <strong>inner setting</strong> (organizational culture, leadership, and infrastructure), <strong>characteristics of individuals</strong> (knowledge, beliefs, and roles of implementers), and <strong>implementation process</strong> (the activities and strategies driving adoption).</p>
+      <p>CFIR's primary value is diagnostic: it helps practitioners identify the specific factors — within an organization and across its environment — that are likely to facilitate or impede implementation. This makes it the right framework to apply at the planning stage, before strategies are selected. CFIR 2.0, an updated iteration, refines several constructs and adds explicit attention to equity and stakeholder engagement.</p>
+      <div class="produces">
+        <span class="produces-label">What CFIR enables</span>
+        <ul>
+          <li>Identification of modifiable factors that can promote or hinder adoption</li>
+          <li>Structured assessment of organizational readiness before implementation begins</li>
+          <li>A common language for discussing implementation barriers across stakeholder groups</li>
+          <li>Basis for selecting tailored implementation strategies matched to identified determinants</li>
+        </ul>
+      </div>
+      <p class="note">CFIR is frequently applied conceptually but not operationalized effectively throughout implementation phases. Selecting CFIR constructs relevant to a specific project — rather than attempting to assess all 39 — is the recommended practice.</p>
+    </div>
+
+    <!-- EPIS -->
+    <div id="epis">
+      <div class="stage-header">
+        <span class="stage-label">Framework 2</span>
+        <h3>Exploration–Preparation–Implementation–Sustainment (EPIS)</h3>
+      </div>
+      <p class="stage-sub">Navigating implementation as a phased, contextual process</p>
+      <p>EPIS provides a phased approach to understanding implementation across four stages. <strong>Exploration</strong> involves assessing organizational need, fit, and capacity before committing to an intervention. <strong>Preparation</strong> covers planning, adaptation, and stakeholder alignment before launch. <strong>Implementation</strong> addresses active delivery, fidelity monitoring, and barrier response. <strong>Sustainment</strong> focuses on the conditions required to maintain the practice after initial implementation energy has dissipated.</p>
+      <p>EPIS is particularly valuable for learning designers because it maps naturally onto the design process: exploration parallels needs analysis, preparation parallels instructional design, and the sustainment phase addresses the most common failure mode in organizational learning — programs that work while the designer is present and collapse when they are not.</p>
+      <div class="produces">
+        <span class="produces-label">What EPIS enables</span>
+        <ul>
+          <li>A structured way to think about what is needed at each phase of implementation</li>
+          <li>Explicit attention to the inner setting (organizational factors) and outer setting (system factors) at each phase</li>
+          <li>A planning frame that situates sustainment as a design problem, not an afterthought</li>
+          <li>Identification of stakeholder engagement requirements that shift across phases</li>
+        </ul>
+      </div>
+      <p class="note">The most common failure of EPIS application is underinvesting in the exploration phase — moving to preparation before organizational readiness has been genuinely assessed. This produces well-designed programs delivered into unprepared systems.</p>
+    </div>
+
+    <!-- RE-AIM -->
+    <div id="reaim">
+      <div class="stage-header">
+        <span class="stage-label">Framework 3</span>
+        <h3>RE-AIM: Reach, Effectiveness, Adoption, Implementation, Maintenance</h3>
+      </div>
+      <p class="stage-sub">Evaluating the public health impact of interventions</p>
+      <p>RE-AIM shifts the evaluation question from "did the intervention work under ideal conditions?" to "what is its actual impact at scale?" Its five dimensions — <strong>Reach</strong> (who participated, and who was excluded), <strong>Effectiveness</strong> (outcomes for participants), <strong>Adoption</strong> (uptake by settings and practitioners), <strong>Implementation</strong> (fidelity and consistency of delivery), and <strong>Maintenance</strong> (sustained use over time) — together produce a comprehensive picture of real-world public health impact.</p>
+      <p>For learning designers, RE-AIM makes visible what standard evaluation frameworks often miss: the gap between program effectiveness for participants who completed it and population-level impact, which depends on who was reached, how consistently it was delivered, and whether it persisted. A program with strong reaction and learning outcomes that reaches only the most engaged learners and disappears after six months has not solved the implementation problem.</p>
+      <div class="produces">
+        <span class="produces-label">What RE-AIM enables</span>
+        <ul>
+          <li>A balanced view of internal validity (effectiveness) and external validity (reach and adoption)</li>
+          <li>Explicit measurement of who the program did not reach — which is often the equity question</li>
+          <li>Evaluation of fidelity as a distinct dimension from outcome measurement</li>
+          <li>A framework for assessing sustainability that is grounded in empirical data, not intention</li>
+        </ul>
+      </div>
+      <p class="note">RE-AIM has been critiqued for its predominantly quantitative orientation. Integrating qualitative approaches — particularly for understanding Adoption and the experience of Implementation from practitioners' perspectives — is now considered best practice.</p>
+    </div>
+
+    <!-- Additional frameworks -->
+    <div id="additional-frameworks">
+      <div class="stage-header">
+        <span class="stage-label">Framework 4</span>
+        <h3>Additional Frameworks: PARIHS, NPT, TDF, and Knowledge to Action</h3>
+      </div>
+      <p class="stage-sub">Frameworks suited to specific implementation questions</p>
+      <p>Beyond the three primary frameworks, several others address specific implementation dimensions. <strong>Promoting Action on Research Implementation in Health Services (PARIHS)</strong> posits that successful implementation is a function of evidence, context, and facilitation — a formulation that resonates directly with learning design practice. <strong>Normalization Process Theory (NPT)</strong> focuses on the social processes through which new practices become embedded in routine — particularly relevant when designing for sustained behavior change rather than one-time adoption.</p>
+      <p>The <strong>Theoretical Domains Framework (TDF)</strong> synthesizes constructs from multiple behavior change theories into 14 domains addressing individual and collective determinants of behavior — making it a useful diagnostic for understanding why practitioners do or do not change practice. The <strong>Knowledge to Action (K2A) Framework</strong> describes a cyclical process of knowledge creation and application that maps directly onto knowledge translation design.</p>
+      <div class="produces">
+        <span class="produces-label">Selecting the right framework</span>
+        <ul>
+          <li>Use CFIR to diagnose contextual determinants at the planning stage</li>
+          <li>Use EPIS to sequence and structure implementation activities across phases</li>
+          <li>Use RE-AIM to evaluate population-level impact and guide scale-up decisions</li>
+          <li>Use TDF to analyze individual-level barriers to behavior change among practitioners</li>
+          <li>Use NPT to understand and support the normalization of new practices in routine</li>
+        </ul>
+      </div>
+      <p class="note">When combining frameworks, ensure they yield complementary rather than redundant information. Justification for the chosen combination should be grounded in the specific questions the project needs to answer — not in comprehensiveness for its own sake.</p>
+    </div>
+
+    <div class="callout" id="framework-distinction">
+      <span class="callout-label">Theory, model, and framework: a necessary distinction</span>
+      <p>These terms are often used interchangeably, but they are not synonymous. A <strong>theory</strong> is a set of analytical principles designed to structure observation and understanding of phenomena. A <strong>model</strong> is a deliberate simplification of a phenomenon or specific aspect of it. A <strong>framework</strong> is a structured overview consisting of descriptive categories that provide a system for understanding implementation processes. Knowing which you are using — and why — determines how appropriately you can apply it.</p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 3: IMPLEMENTATION PROCESS
+  ═══════════════════════════════════════════ -->
+  <section class="section-block" id="process">
+    <span class="section-marker">Section 3</span>
+    <h2>How Implementation Unfolds: A Practitioner's Map</h2>
+
+    <p>Implementation science treats the adoption of evidence-based practice as a structured, iterative process with distinct phases — not a linear rollout from research to practice. The phases below integrate the EPIS phased model with practical considerations for learning designers working within health, education, and social sector organizations. Understanding the full arc clarifies what is gained or lost when particular phases are abbreviated.</p>
+
+    <!-- Phase 1 -->
+    <div id="phase-1">
+      <div class="stage-header">
+        <span class="stage-label">Phase 1</span>
+        <h3>Context Assessment and Readiness</h3>
+      </div>
+      <p class="stage-sub">Understanding the system before designing for it</p>
+      <p>Implementation begins before any program is designed. The exploration phase assesses organizational readiness, fit between the evidence-based practice and the receiving context, and the inner and outer setting factors that will shape adoption. This includes organizational culture, leadership alignment, available resources, staff capacity, policy environment, and community context.</p>
+      <p>For learning designers, this phase is the implementation science equivalent of needs analysis — but with an expanded diagnostic scope. The question is not only "what do learners need to know?" but "what does this organization need to have in place for new practice to take hold, persist, and spread?" CFIR provides the most comprehensive diagnostic structure for this phase.</p>
+      <div class="produces">
+        <span class="produces-label">This phase produces</span>
+        <ul>
+          <li>An assessment of organizational readiness across inner and outer setting factors</li>
+          <li>Identification of the specific barriers and facilitators likely to shape implementation</li>
+          <li>A determination of whether the evidence-based practice is a good fit for this context — or requires principled adaptation before launch</li>
+          <li>A shared understanding among stakeholders of what implementation will require</li>
+        </ul>
+      </div>
+      <p class="note">Most implementation failures can be traced to insufficient exploration — moving to design before the receiving system has been genuinely understood. The cost of this error is paid at the implementation phase, not the design phase.</p>
+    </div>
+
+    <!-- Phase 2 -->
+    <div id="phase-2">
+      <div class="stage-header">
+        <span class="stage-label">Phase 2</span>
+        <h3>Stakeholder Engagement and Co-Design</h3>
+      </div>
+      <p class="stage-sub">Engaging those affected as architects, not recipients</p>
+      <p>Meaningful stakeholder engagement is not a consultation step added to a pre-designed implementation plan — it is the process through which implementation is shaped by those whose context, knowledge, and participation determine whether it succeeds. This includes practitioners who will deliver the program, community members who will be affected, and organizational leaders who will resource and support it.</p>
+      <p>The engagement intensity spectrum ranges from informing (sharing plans) to co-design (shared decision-making over program structure, adaptation, and evaluation). Co-design is particularly important when designing for communities whose experience is not well-represented among the design team — and when the goal is community ownership of implementation that survives leadership transitions and funding cycles. Disability justice and decolonization frameworks name the power dynamics in engagement processes explicitly, which is necessary for producing evaluations that are genuinely equitable rather than performatively inclusive.</p>
+      <div class="produces">
+        <span class="produces-label">This phase produces</span>
+        <ul>
+          <li>A stakeholder map identifying whose involvement is needed and at what intensity</li>
+          <li>An engagement plan with designed processes for meaningful participation across implementation phases</li>
+          <li>Community ownership of program elements that ensures sustainability beyond project funding</li>
+          <li>Identification of equity considerations in design, delivery, and evaluation from the outset</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Phase 3 -->
+    <div id="phase-3">
+      <div class="stage-header">
+        <span class="stage-label">Phase 3</span>
+        <h3>Fidelity Planning and Principled Adaptation</h3>
+      </div>
+      <p class="stage-sub">Knowing what must be preserved — and what can change</p>
+      <p>Evidence-based practices are typically developed in one context and implemented in others. The central fidelity question is: which elements of the original program are the active ingredients — the components through which outcomes are produced — and which are surface features that can be adapted to local context without compromising effectiveness?</p>
+      <p>Fidelity is not the same as rigid replication. Principled adaptation — modifying programs deliberately and transparently to fit local populations, resources, and cultural contexts, while preserving core mechanisms — is a recognized and necessary implementation practice. The failure mode is not adaptation per se; it is undocumented, unevaluated adaptation that erodes outcomes without practitioners realizing it. Documenting adaptations systematically allows what is learned in one implementation to inform others.</p>
+      <div class="produces">
+        <span class="produces-label">This phase produces</span>
+        <ul>
+          <li>Identification of the core components (active ingredients) of the evidence-based practice</li>
+          <li>A written adaptation plan documenting what was changed, why, and for whom</li>
+          <li>Fidelity monitoring tools integrated into delivery — not added after launch</li>
+          <li>A shared understanding among implementers of what delivery fidelity looks like in practice</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Phase 4 -->
+    <div id="phase-4">
+      <div class="stage-header">
+        <span class="stage-label">Phase 4</span>
+        <h3>Training System Design</h3>
+      </div>
+      <p class="stage-sub">Building the learning infrastructure that makes delivery possible</p>
+      <p>This is the phase where learning design and implementation science most directly converge — and where the design gap is most consequential. An evidence-based intervention can be excellent and its evidence strong, but if the training system that prepares practitioners to deliver it is poorly designed, delivery will be inconsistent, fidelity will erode, and outcomes will disappoint. The training system is not a supplement to implementation; it is implementation infrastructure.</p>
+      <p>Effective training system design for implementation includes: a competency framework that specifies what practitioners must know, believe, and be able to do; instructional design for skill-based practice rather than knowledge transmission; fidelity support structures including observation, feedback, and supervision; and transfer conditions that account for the organizational environment practitioners return to after training. The 70-20-10 model is a useful heuristic here — most practice development in implementation contexts occurs through supervised experience and peer learning, not formal instruction alone.</p>
+      <div class="produces">
+        <span class="produces-label">This phase produces</span>
+        <ul>
+          <li>A competency framework specifying what practitioners need to deliver the intervention with fidelity</li>
+          <li>Training materials designed around skill development, not information transfer</li>
+          <li>A supervision and coaching structure that supports ongoing fidelity after initial training</li>
+          <li>Transfer conditions designed into the program — not assumed to exist in the environment</li>
+        </ul>
+      </div>
+      <p class="note">Task-shifting models — where simplified versions of evidence-based interventions are delivered by non-specialist practitioners — make training system design especially consequential. The quality of the training system determines whether task-shifting expands access or simply dilutes fidelity.</p>
+    </div>
+
+    <!-- Phase 5 -->
+    <div id="phase-5">
+      <div class="stage-header">
+        <span class="stage-label">Phase 5</span>
+        <h3>Implementation Outcome Measurement</h3>
+      </div>
+      <p class="stage-sub">Measuring whether the practice is being implemented — not just whether outcomes are improving</p>
+      <p>Implementation science distinguishes between clinical or program outcomes (did the target population benefit?) and implementation outcomes (was the intervention delivered as intended, to whom, at what coverage?). Both are necessary. Most programs measure only the first and then cannot explain why scale-up fails. Proctor's eight implementation outcomes provide the measurement framework: <strong>acceptability</strong>, <strong>adoption</strong>, <strong>appropriateness</strong>, <strong>feasibility</strong>, <strong>fidelity</strong>, <strong>implementation cost</strong>, <strong>penetration</strong>, and <strong>sustainability</strong>.</p>
+      <p>For learning designers, this reframes evaluation design significantly. The Kirkpatrick Four Levels measure learner outcomes (Levels 1–2) and transfer (Levels 3–4) — which are valuable but incomplete. Implementation outcome measurement additionally asks: did the program reach the practitioners who most needed it? Was it delivered consistently across sites? What did it cost per unit of fidelity achieved? Is it still running in six months? Designing mixed-method measurement systems that capture both sets of questions produces data that can inform scale-up decisions rather than just post-program reports.</p>
+      <div class="produces">
+        <span class="produces-label">This phase produces</span>
+        <ul>
+          <li>A measurement plan spanning Proctor's eight implementation outcomes, with methods for each</li>
+          <li>Data collection instruments integrated into delivery workflows — not added afterward</li>
+          <li>Clear distinction between implementation outcome data and clinical or learning outcome data</li>
+          <li>Findings that can inform adaptation, scale-up, and sustainability decisions</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Phase 6 -->
+    <div id="phase-6">
+      <div class="stage-header">
+        <span class="stage-label">Phase 6</span>
+        <h3>Sustainability Planning</h3>
+      </div>
+      <p class="stage-sub">Designing for continuation from the beginning — not as an afterthought at funding cycle end</p>
+      <p>The single most common implementation failure mode is program discontinuation when initial funding ends — not because the program failed, but because sustainability was never designed. Effective sustainment planning begins at the exploration phase, not the close-out phase. It covers how organizational ownership is built (rather than project-level ownership that disappears with the project), how resource dependency is reduced over time, and which policy and funding levers can move a program from pilot to permanent infrastructure.</p>
+      <p>Sustainability is not merely continuation — it is dynamic adaptation. Programs that survive do so because they remain responsive to evolving context, leadership, and community need. A PDSA-based continuous improvement cycle, embedded in the implementation design from the outset, is more likely to produce sustainable programs than programs designed as finished products.</p>
+      <div class="produces">
+        <span class="produces-label">This phase produces</span>
+        <ul>
+          <li>A sustainability plan addressing organizational ownership, resource requirements, and risk factors</li>
+          <li>Identified policy and funding levers for long-term institutionalization</li>
+          <li>A continuous improvement mechanism that maintains program responsiveness after initial implementation</li>
+          <li>Explicit transition planning from project-funded to organizationally embedded delivery</li>
+        </ul>
+      </div>
+      <p class="note">Programs designed as time-limited projects rarely outlive their funding. Programs designed as organizational infrastructure — with embedded ownership, reduced external dependency, and connection to policy — have a substantially higher likelihood of continuation.</p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 4: COMPETENCIES
+  ═══════════════════════════════════════════ -->
+  <section class="section-block" id="competencies">
+    <span class="section-marker">Section 4</span>
+    <h2>Core Competencies</h2>
+
+    <p>The competencies below span three dimensions: <em>knowing</em> (theory and evidence), <em>doing</em> (methods and practice), and <em>being</em> (values, relationships, and professional identity). The most effective practitioners integrate all three, adapting their emphasis depending on whether they are working as researchers, practitioners, knowledge brokers, evaluators, or system leaders — roles that frequently overlap within a single career.</p>
+
+    <div class="domain-group" id="comp-foundational">
+      <div class="domain-label">Foundational Knowledge</div>
+
+      <h3>Theoretical fluency</h3>
+      <p>Deep familiarity with implementation theories, models, and frameworks — including CFIR, EPIS, RE-AIM, Diffusion of Innovations, and the Theoretical Domains Framework — and the ability to select and apply them appropriately to context rather than defaulting to a single preferred framework regardless of the question being asked.</p>
+
+      <h3>Evidence appraisal</h3>
+      <p>The ability to critically assess research quality, synthesize evidence across study designs, and judge the applicability of findings to real-world settings — including the capacity to distinguish between what an intervention produces under ideal trial conditions and what it is likely to produce in the target context.</p>
+
+      <h3>Contextual analysis</h3>
+      <p>Skill in assessing the inner and outer setting of an implementation — organizational culture, leadership readiness, available resources, staff capacity, policy environment, and community context. This is the implementation science parallel to needs analysis: the diagnostic foundation on which effective strategy selection depends.</p>
+    </div>
+
+    <div class="domain-group" id="comp-research">
+      <div class="domain-label">Research and Evaluation</div>
+
+      <h3>Mixed-methods research design</h3>
+      <p>Proficiency in combining qualitative and quantitative methods to capture both "what works" and "why and how it works" in implementation. Qualitative methods illuminate stakeholder experience and contextual barriers that quantitative metrics alone cannot surface. Both are necessary for rigorous implementation evaluation.</p>
+
+      <h3>Implementation outcome measurement</h3>
+      <p>The ability to design and use measurement systems for Proctor's eight implementation outcomes — acceptability, adoption, appropriateness, feasibility, fidelity, implementation cost, penetration, and sustainability — systematically and in distinction from clinical or program outcome measurement.</p>
+
+      <h3>Process and improvement evaluation</h3>
+      <p>Competency in formative evaluation, rapid-cycle learning, and quality improvement methods — including PDSA cycles — to adapt implementation strategies in real time rather than waiting for summative findings that arrive too late to inform practice.</p>
+
+      <h3>Data literacy and analytics</h3>
+      <p>Skill in collecting, managing, interpreting, and communicating data to diverse audiences — including the use of administrative and routinely collected data. Translating data into actionable implementation decisions is a distinct competency from collecting it.</p>
+    </div>
+
+    <div class="domain-group" id="comp-mobilization">
+      <div class="domain-label">Knowledge Mobilization</div>
+
+      <h3>Knowledge brokering</h3>
+      <p>The ability to bridge the gap between researchers and practitioners — translating, packaging, and contextualizing evidence so it is actionable for decision-makers who did not produce it and may not have the time or training to appraise it directly. Knowledge translation is a design problem; most organizations treat it as a communication problem, which is why it fails.</p>
+
+      <h3>Co-production and participatory practice</h3>
+      <p>Skill in engaging communities, service users, practitioners, and policymakers as genuine partners in generating and applying knowledge — not as recipients of pre-designed solutions. The distinction between consultation and co-design is consequential in implementation contexts where community ownership determines sustainability.</p>
+
+      <h3>Dissemination and communication</h3>
+      <p>The ability to tailor messages, formats, and channels — policy briefs, infographics, plain-language summaries, academic papers, professional development resources — to specific audiences and purposes. Effective dissemination is active, not passive: it requires direct engagement with target users, not the publication of materials and the hope that they will be found.</p>
+
+      <h3>Stakeholder engagement and partnership development</h3>
+      <p>Competency in identifying, convening, and sustaining meaningful relationships with diverse stakeholders across sectors and systems — including the capacity to navigate competing priorities and power dynamics without losing the analytical and ethical clarity that makes engagement substantive rather than performative.</p>
+    </div>
+
+    <div class="domain-group" id="comp-practice">
+      <div class="domain-label">Implementation Practice</div>
+
+      <h3>Implementation planning and strategy selection</h3>
+      <p>The ability to design implementation plans, select evidence-based implementation strategies — including from compilations such as the Expert Recommendations for Implementing Change (ERIC) — and sequence activities appropriately across the EPIS phases. Strategy selection should be matched to identified determinants, not chosen by preference.</p>
+
+      <h3>Facilitation and coaching</h3>
+      <p>Skill in guiding teams and organizations through implementation processes — including problem-solving barriers, building buy-in among resistant stakeholders, and sustaining momentum across the implementation lifecycle. Facilitation in implementation contexts is structured sense-making under uncertainty, not information delivery.</p>
+
+      <h3>Adaptation and fidelity balancing</h3>
+      <p>Competency in making principled adaptations to innovations to fit local context while preserving the core components that drive outcomes — and documenting those adaptations systematically so that the learning travels. Knowing when adaptation is legitimate and when it constitutes outcome-eroding drift is one of the most consequential practical judgments in implementation.</p>
+
+      <h3>Sustainability and scale-up planning</h3>
+      <p>The ability to plan for long-term sustainment from the outset — addressing resource dependency, building organizational ownership, and designing for spread across sites or systems. Programs that are not designed to sustain rarely do, regardless of their effectiveness during the project period.</p>
+    </div>
+
+    <div class="domain-group" id="comp-systems">
+      <div class="domain-label">Systems, Equity, and Leadership</div>
+
+      <h3>Systems thinking</h3>
+      <p>The ability to map stakeholder networks, identify leverage points, anticipate feedback loops, and navigate complexity rather than treating implementation as a linear rollout. Implementation occurs in dynamic systems; the practitioner who can reason about the whole — not just optimize each component — produces more durable results.</p>
+
+      <h3>Equity-centred practice</h3>
+      <p>Competency in identifying how structural inequities shape implementation processes and outcomes — and intentionally designing for equity in access, experience, and benefit from the outset. Equity is not a downstream consideration; it is a design requirement. Applying principles such as OCAP (ownership, control, access, and possession) in data design, and incorporating Indigenous evaluation frameworks where appropriate, reflects this commitment in practice.</p>
+
+      <h3>Policy literacy and navigation</h3>
+      <p>Understanding of how policy environments enable or constrain implementation, and skill in aligning implementation efforts with policy windows and levers — particularly relevant for programs seeking to move from pilot to embedded practice.</p>
+
+      <h3>Collaborative leadership</h3>
+      <p>The ability to lead without formal authority, build shared vision across organizational levels, and foster psychological safety in cross-disciplinary teams — where practitioners, researchers, community members, and policymakers must work together on problems none can solve alone.</p>
+
+      <h3>Cultural humility and relational practice</h3>
+      <p>An ongoing commitment to self-reflection, learning, and centering the expertise and lived experience of those most affected by implementation efforts — particularly in contexts where the implementer's background and the community's experience differ substantially. Cultural humility is a practice, not a credential.</p>
+
+      <h3>Reflexivity and continuous learning</h3>
+      <p>A commitment to ongoing critical reflection on one's own assumptions, positionality, and practice — essential in a field where context is everything and where the practitioner's perspective inevitably shapes the questions asked, the data collected, and the solutions proposed.</p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 5: IMPACT
+  ═══════════════════════════════════════════ -->
+  <section class="section-block" id="impact">
+    <span class="section-marker">Section 5</span>
+    <h2>Impact and Areas of Greatest Potential</h2>
+
+    <p>Implementation science matters most where the gap between available evidence and actual practice is largest — and where the consequences of that gap are most severe. The domains below were identified by applying a framework that prioritizes problems by scale (how many people are affected), neglectedness (how few resources are directed at the implementation dimension specifically), and tractability (how solvable the implementation problem is with additional effort).</p>
+
+    <h3 id="priority-domains">Highest-priority domains</h3>
+
+    <table class="impact-table" aria-label="Highest-priority domains for implementation science by scale, neglectedness, and tractability">
+      <thead>
+        <tr>
+          <th scope="col">Domain</th>
+          <th scope="col">Why implementation science matters here</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Global Health and High-Burden Disease</strong></td>
+          <td>The gap between what we know works and what gets delivered in low- and middle-income countries is enormous. Evidence-based interventions for malaria, tuberculosis, HIV, and maternal and child mortality exist but are chronically under-implemented. This is arguably the highest expected-value area in the field.</td>
+        </tr>
+        <tr>
+          <td><strong>Mental Health at Scale</strong></td>
+          <td>The treatment gap for mental health conditions exceeds 75% in many countries. Task-shifting models, digital therapeutics, and community-based interventions exist but are poorly implemented. Training system design is the critical bottleneck — which is where learning design expertise is directly applicable.</td>
+        </tr>
+        <tr>
+          <td><strong>Evidence-Informed Policymaking in Low- and Middle-Income Countries</strong></td>
+          <td>Strengthening the capacity of governments to generate, absorb, and act on evidence is a high-leverage meta-investment. When policymaking systems become more evidence-responsive, every subsequent intervention — in health, education, agriculture, and social protection — becomes more likely to be implemented well.</td>
+        </tr>
+        <tr>
+          <td><strong>Pandemic and Health Security Preparedness</strong></td>
+          <td>COVID-19 exposed catastrophic failures not in knowledge generation but in knowledge mobilization — vaccine hesitancy, inconsistent guideline adoption, fragmented health system response. Implementation science applied proactively to preparedness infrastructure offers enormous leverage: getting proven protocols into systems before the next crisis.</td>
+        </tr>
+        <tr>
+          <td><strong>Education Systems Transformation</strong></td>
+          <td>Hundreds of millions of children globally receive schooling that produces minimal learning. Evidence-based pedagogical practices exist but fail to penetrate at scale. Implementation science applied to education — particularly in low- and middle-income countries — could affect life trajectories for enormous numbers of people.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="adjacent-domains">Adjacent high-impact areas for learning designers</h3>
+
+    <table class="impact-table" aria-label="Adjacent high-impact areas where learning design expertise is directly applicable">
+      <thead>
+        <tr>
+          <th scope="col">Domain</th>
+          <th scope="col">The implementation science opportunity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>AI Safety and Responsible Deployment</strong></td>
+          <td>As AI systems move rapidly from research to deployment, the implementation science question — how do organizations reliably adopt, adapt, and govern AI tools in ways that are safe and equitable — is deeply neglected. The field has strong technical capacity but weak implementation and diffusion infrastructure.</td>
+        </tr>
+        <tr>
+          <td><strong>Scaling Effective Social Programs</strong></td>
+          <td>In high-income countries, significant public investment goes into social programs — early childhood intervention, addiction treatment, housing-first models, family support services — with highly variable fidelity and outcomes. The "what works" knowledge base is substantial but the implementation infrastructure is fragmented.</td>
+        </tr>
+        <tr>
+          <td><strong>Climate Change Implementation</strong></td>
+          <td>The evidence base for effective climate interventions is growing rapidly, but implementation into policy and practice lags badly. Knowledge mobilization between climate scientists, policymakers, and communities is a critical bottleneck — one that implementation science and learning design are well positioned to address.</td>
+        </tr>
+        <tr>
+          <td><strong>Criminal Justice Reform and Violence Prevention</strong></td>
+          <td>Evidence-based interventions in violence prevention, recidivism reduction, and trauma-informed justice exist but are poorly disseminated across systems deeply resistant to change. Knowledge mobilization that bridges criminology, public health, and lived experience could unlock significant impact.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <span class="callout-label">The deepest insight</span>
+      <p>Across nearly every domain that generates serious concern about human welfare, the binding constraint is rarely the absence of knowledge — it is the failure to reliably get knowledge into practice. Implementation science is the discipline built to close that gap. Learning design is the infrastructure that makes closing it possible at scale. A career integrating both is a high-leverage career by almost any measure.</p>
+    </div>
+
+    <h3 id="org-impact">What rigorous implementation design produces for organizations</h3>
+
+    <p>At the organizational level, investment in implementation science competencies produces concrete and measurable returns. <strong>Programs reach the people who most need them</strong> — rather than defaulting to the easiest-to-reach participants. <strong>Evidence-based practices are delivered with fidelity</strong> — not just adopted in name while drifting from the components that make them work. <strong>Evaluation infrastructure is built into programs from the start</strong> — producing data that can inform adaptation and scale-up, not just document completion. <strong>Sustainability is designed rather than assumed</strong> — so that programs that work during a project period are more likely to continue after it ends.</p>
+
+    <p>The longer-term institutional benefit is a shift in how the organization relates to evidence: from occasional consumers of research to active knowledge mobilization practitioners who can systematically connect evidence to practice and generate new evidence through rigorous implementation. This is not a cultural shift that happens through a single training program. It is the result of sustained investment in implementation science capacity at the individual, team, and organizational levels simultaneously.</p>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 6: REFLECTION
+  ═══════════════════════════════════════════ -->
+  <section class="section-block" id="reflection">
+    <span class="section-marker">Section 6</span>
+    <h2>Reflection: Where Are You in This Work?</h2>
+
+    <p>The questions below are intended to help you surface useful considerations about where your current practice intersects with implementation science — and where the most productive investments in your development might lie. There are no right or wrong answers. The most useful responses are honest ones, not aspirational ones. Working through these with colleagues who hold different roles and perspectives tends to be more productive than working through them alone.</p>
+
+    <div class="reflection-group">
+      <h3>On context assessment and intervention type</h3>
+      <ul>
+        <li><span class="q-icon">→</span> How does your organization currently determine whether a learning intervention is the right response to a performance or practice gap — and at what point does that determination happen relative to content development?</li>
+        <li><span class="q-icon">→</span> Where in your organization are performance gaps addressed through training when a different intervention — motivational, structural, or environmental — might be more appropriate?</li>
+        <li><span class="q-icon">→</span> How systematically do you assess the inner setting — organizational culture, leadership readiness, available resources — before designing a program?</li>
+      </ul>
+    </div>
+
+    <div class="reflection-group">
+      <h3>On stakeholder engagement and equity</h3>
+      <ul>
+        <li><span class="q-icon">→</span> At what point in your design process do the people most affected by a program become involved in shaping it — and is that involvement consultation or co-design?</li>
+        <li><span class="q-icon">→</span> Are there learner groups whose experience of your programs you know relatively little about — and what would it take to understand it better?</li>
+        <li><span class="q-icon">→</span> How explicitly does your design process address who your programs do not reach — and what that absence means for equity of access and benefit?</li>
+      </ul>
+    </div>
+
+    <div class="reflection-group">
+      <h3>On fidelity, adaptation, and training system design</h3>
+      <ul>
+        <li><span class="q-icon">→</span> When you adapt an evidence-based program to a new context, how systematically do you identify which elements are core to its effectiveness and which can safely change?</li>
+        <li><span class="q-icon">→</span> Does your training system design address skill-based performance and transfer conditions — or primarily knowledge transmission?</li>
+        <li><span class="q-icon">→</span> What supervision and coaching structures exist to support practitioners in maintaining fidelity after initial training is complete?</li>
+      </ul>
+    </div>
+
+    <div class="reflection-group">
+      <h3>On implementation outcome measurement</h3>
+      <ul>
+        <li><span class="q-icon">→</span> How does your current evaluation practice distinguish between implementation outcomes (was the program delivered as intended, to whom, at what coverage?) and learner or program outcomes (did participants benefit?)?</li>
+        <li><span class="q-icon">→</span> Which of Proctor's eight implementation outcomes — acceptability, adoption, appropriateness, feasibility, fidelity, cost, penetration, sustainability — does your measurement system currently address?</li>
+        <li><span class="q-icon">→</span> How do evaluation findings currently feed back into program adaptation and scale-up decisions — or do they primarily serve reporting functions?</li>
+      </ul>
+    </div>
+
+    <div class="reflection-group">
+      <h3>On sustainability and organizational strategy</h3>
+      <ul>
+        <li><span class="q-icon">→</span> For programs your organization currently runs, when was sustainability first considered — at design, at launch, or at the end of the funding cycle?</li>
+        <li><span class="q-icon">→</span> What would it look like for your organization to move from project-level ownership of learning programs to organizational infrastructure that does not depend on any single practitioner or funding stream?</li>
+        <li><span class="q-icon">→</span> What is a realistic next step — given current resources, constraints, and the people who have the authority to move things forward?</li>
+      </ul>
+    </div>
+
+    <p>The practitioners who make meaningful progress in this work tend to be those who create space for honest conversations about where the gaps actually are — not where they would like them to be.</p>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 7: CITATIONS
+  ═══════════════════════════════════════════ -->
+  <section class="section-block" id="citations">
+    <span class="section-marker">Section 7</span>
+    <h2>Citations</h2>
+
+    <p>The knowledge claims, frameworks, and evidence in this resource draw on established scholarship and professional practice in implementation science, knowledge mobilization, systems thinking, organizational change, and equity-centred evaluation. Sources are grouped by the area of the resource they primarily support.</p>
+
+    <div class="citation-group">
+      <div class="citation-group-label">Implementation Frameworks: CFIR, EPIS, RE-AIM</div>
+      <div class="citation-entry">
+        <span class="cite-label">CFIR foundational source</span>
+        <p><strong>Damschroder, L. J., Aron, D. C., Keith, R. E., Kirsh, S. R., Alexander, J. A., &amp; Lowery, J. C.</strong> "Fostering Implementation of Health Services Research Findings into Practice: A Consolidated Framework for Advancing Implementation Science." <em>Implementation Science</em>, 4(1), 50, 2009.</p>
+      </div>
+      <div class="citation-entry">
+        <span class="cite-label">EPIS and framework selection</span>
+        <p><strong>Moullin, J. C., Dickson, K. S., Stadnick, N. A., Albers, B., Nilsen, P., Broder-Fingert, S., Mukasa, B., &amp; Aarons, G. A.</strong> "Ten Recommendations for Using Implementation Frameworks in Research and Practice." <em>Implementation Science Communications</em>, 1(1), 42, 2020.</p>
+      </div>
+      <div class="citation-entry">
+        <span class="cite-label">RE-AIM framework</span>
+        <p><strong>Glasgow, R. E., Vogt, T. M., &amp; Boles, S. M.</strong> "Evaluating the Public Health Impact of Health Promotion Interventions: The RE-AIM Framework." <em>American Journal of Public Health</em>, 89(9), 1322–1327, 1999.</p>
+      </div>
+      <div class="citation-entry">
+        <span class="cite-label">Framework taxonomy</span>
+        <p><strong>Nilsen, P.</strong> "Making Sense of Implementation Theories, Models and Frameworks." <em>Implementation Science</em>, 10(1), 53, 2015. The foundational taxonomy distinguishing process models, determinant frameworks, classic theories, and evaluation frameworks.</p>
+      </div>
+    </div>
+
+    <div class="citation-group">
+      <div class="citation-group-label">Implementation Outcomes</div>
+      <div class="citation-entry">
+        <span class="cite-label">Eight implementation outcomes</span>
+        <p><strong>Proctor, E., Silmere, H., Raghavan, R., Hovmand, P., Aarons, G., Bunger, A., Griffey, R., &amp; Hensley, M.</strong> "Outcomes for Implementation Research: Conceptual Distinctions, Measurement Challenges, and Research Agenda." <em>Administration and Policy in Mental Health and Mental Health Services Research</em>, 38(2), 65–76, 2011.</p>
+      </div>
+    </div>
+
+    <div class="citation-group">
+      <div class="citation-group-label">Knowledge Translation and Exchange</div>
+      <div class="citation-entry">
+        <span class="cite-label">Knowledge to Action Framework</span>
+        <p><strong>Graham, I. D., Logan, J., Harrison, M. B., Straus, S. E., Tetroe, J., Caswell, W., &amp; Robinson, N.</strong> "Lost in Knowledge Translation: Time for a Map?" <em>Journal of Continuing Education in the Health Professions</em>, 26(1), 13–24, 2006.</p>
+      </div>
+      <div class="citation-entry">
+        <span class="cite-label">Knowledge translation in health care</span>
+        <p><strong>Straus, S. E., Tetroe, J., &amp; Graham, I. D.</strong> (Eds.) <em>Knowledge Translation in Health Care: Moving from Evidence to Practice</em>. 2nd ed. Wiley-Blackwell, 2013.</p>
+      </div>
+    </div>
+
+    <div class="citation-group">
+      <div class="citation-group-label">Communication, Dissemination, and Diffusion</div>
+      <div class="citation-entry">
+        <span class="cite-label">Diffusion of Innovations</span>
+        <p><strong>Rogers, E. M.</strong> <em>Diffusion of Innovations</em>. 5th ed. Free Press, 2003. Foundational source for understanding how innovations spread through social systems and the characteristics that determine adoption rates.</p>
+      </div>
+      <div class="citation-entry">
+        <span class="cite-label">Dissemination and implementation science for public health</span>
+        <p><strong>Brownson, R. C., Colditz, G. A., &amp; Proctor, E. K.</strong> (Eds.) <em>Dissemination and Implementation Research in Health: Translating Science to Practice</em>. 2nd ed. Oxford University Press, 2018.</p>
+      </div>
+    </div>
+
+    <div class="citation-group">
+      <div class="citation-group-label">Organizational Theory and Change Management</div>
+      <div class="citation-entry">
+        <span class="cite-label">OTIS framework</span>
+        <p><strong>Birken, S. A., Bunger, A. C., Powell, B. J., Turner, K., Clary, A. S., Klaman, S. L., Yu, Y., Whitaker, D. J., Self, S. R., Rostad, W. L., Chatham, J. R. S., Kirk, M. A., Shea, C. M., Haines, E., &amp; Weiner, B. J.</strong> "Organizational Theory for Dissemination and Implementation Research." <em>Implementation Science</em>, 12(1), 62, 2017.</p>
+      </div>
+      <div class="citation-entry">
+        <span class="cite-label">Change management</span>
+        <p><strong>Kotter, J. P.</strong> <em>Leading Change</em>. Harvard Business Review Press, 1996.</p>
+      </div>
+    </div>
+
+    <div class="citation-group">
+      <div class="citation-group-label">Systems Thinking and Complexity</div>
+      <div class="citation-entry">
+        <span class="cite-label">Systems thinking in organizations</span>
+        <p><strong>Senge, P. M.</strong> <em>The Fifth Discipline: The Art and Practice of the Learning Organization</em>. Doubleday, 1990. Foundational source for the Five Disciplines framework, causal loop thinking, and systems thinking in organizational learning.</p>
+      </div>
+      <div class="citation-entry">
+        <span class="cite-label">Systems thinking for health</span>
+        <p><strong>de Savigny, D., &amp; Adam, T.</strong> (Eds.) <em>Systems Thinking for Health Systems Strengthening</em>. World Health Organization, 2009.</p>
+        <a href="https://www.who.int/alliance-hpsr/resources/9789241563895/en/" target="_blank" rel="noopener">who.int/alliance-hpsr/resources/</a>
+      </div>
+    </div>
+
+    <div class="citation-group">
+      <div class="citation-group-label">Behavioural and Social Sciences for Implementation</div>
+      <div class="citation-entry">
+        <span class="cite-label">Theoretical Domains Framework</span>
+        <p><strong>Cane, J., O'Connor, D., &amp; Michie, S.</strong> "Validation of the Theoretical Domains Framework for Use in Behaviour Change and Implementation Research." <em>Implementation Science</em>, 7(1), 37, 2012.</p>
+      </div>
+      <div class="citation-entry">
+        <span class="cite-label">Normalization Process Theory</span>
+        <p><strong>May, C. R., Mair, F., Finch, T., MacFarlane, A., Dowrick, C., Treweek, S., Rapley, T., Ballini, L., Ong, B. N., Rogers, A., Murray, E., Elwyn, G., Légaré, F., Gunn, J., &amp; Montori, V. M.</strong> "Development of a Theory of Implementation and Integration: Normalization Process Theory." <em>Implementation Science</em>, 4(1), 29, 2009.</p>
+      </div>
+    </div>
+
+    <div class="citation-group">
+      <div class="citation-group-label">Research Methodology and Evidence Synthesis</div>
+      <div class="citation-entry">
+        <span class="cite-label">Mixed methods in implementation science</span>
+        <p><strong>Palinkas, L. A., Aarons, G. A., Horwitz, S., Chamberlain, P., Hurlburt, M., &amp; Landsverk, J.</strong> "Mixed Method Designs in Implementation Research." <em>Administration and Policy in Mental Health and Mental Health Services Research</em>, 38(1), 44–53, 2011.</p>
+      </div>
+      <div class="citation-entry">
+        <span class="cite-label">Systematic reviews in implementation science</span>
+        <p><strong>Cochrane Effective Practice and Organisation of Care (EPOC) Group.</strong> EPOC Resources for Review Authors. Cochrane, 2017.</p>
+        <a href="https://epoc.cochrane.org/resources/epoc-resources-review-authors" target="_blank" rel="noopener">epoc.cochrane.org</a>
+      </div>
+    </div>
+
+    <div class="citation-group">
+      <div class="citation-group-label">Equity, Decolonizing Data, and Culturally Responsive Evaluation</div>
+      <div class="citation-entry">
+        <span class="cite-label">OCAP principles</span>
+        <p><strong>First Nations Information Governance Centre.</strong> <em>The First Nations Principles of OCAP®</em>. FNIGC, 2014.</p>
+        <a href="https://fnigc.ca/ocap-training/" target="_blank" rel="noopener">fnigc.ca/ocap-training/</a>
+      </div>
+      <div class="citation-entry">
+        <span class="cite-label">Decolonizing methodologies</span>
+        <p><strong>Smith, L. T.</strong> <em>Decolonizing Methodologies: Research and Indigenous Peoples</em>. 2nd ed. Zed Books, 2012.</p>
+      </div>
+      <div class="citation-entry">
+        <span class="cite-label">Equity-centred implementation</span>
+        <p><strong>Baumann, A. A., &amp; Cabassa, L. J.</strong> "Reframing Implementation Science to Address Inequities in Healthcare Delivery." <em>BMC Health Services Research</em>, 20(1), 190, 2020.</p>
+      </div>
+    </div>
+
+    <div class="citation-group">
+      <div class="citation-group-label">Evaluation and Continuous Improvement</div>
+      <div class="citation-entry">
+        <span class="cite-label">PDSA cycles and improvement science</span>
+        <p><strong>Langley, G. J., Moen, R. D., Nolan, K. M., Nolan, T. W., Norman, C. L., &amp; Provost, L. P.</strong> <em>The Improvement Guide: A Practical Approach to Enhancing Organizational Performance</em>. 2nd ed. Jossey-Bass, 2009.</p>
+      </div>
+      <div class="citation-entry">
+        <span class="cite-label">Learning analytics and iterative improvement</span>
+        <p><strong>Long, P., &amp; Siemens, G.</strong> "Penetrating the Fog: Analytics in Learning and Education." <em>EDUCAUSE Review</em>, 46(5), 30–32, 2011.</p>
+      </div>
+    </div>
+
+    <div class="citation-group">
+      <div class="citation-group-label">Task-Shifting and Capacity Building</div>
+      <div class="citation-entry">
+        <span class="cite-label">WHO task-shifting model</span>
+        <p><strong>World Health Organization.</strong> <em>Task Shifting: Rational Redistribution of Tasks Among Health Workforce Teams: Global Recommendations and Guidelines</em>. WHO, 2008.</p>
+        <a href="https://www.who.int/healthsystems/TTR-TaskShifting.pdf" target="_blank" rel="noopener">who.int</a>
+      </div>
+      <div class="citation-entry">
+        <span class="cite-label">Capacity building in implementation science</span>
+        <p><strong>Brownson, R. C., Fielding, J. E., &amp; Green, L. W.</strong> "Building Capacity for Evidence-Based Public Health: Reconciling the Pulls of Practice and the Push of Research." <em>Annual Review of Public Health</em>, 39, 27–53, 2018.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <a href="#toc" class="back-to-top">&#8593; Back to contents</a>
+
+  <div class="page-credit">
+    This resource draws on established scholarship in implementation science, knowledge mobilization, systems thinking, organizational change, and equity-centred evaluation. It does not constitute professional consulting advice. An <a href="implementation-science-for-learning-design-practitioners.html">interactive version with tabs and expandable sections</a> is also available.
+  </div>
+
+</main>
+
+<footer>
+  Implementation Science for Learning Design Practitioners — Knowledge Resource
+</footer>
+
+</body>
+</html>
